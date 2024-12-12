@@ -56,7 +56,6 @@ with open("input.txt", "r") as filename:
             # this update is bad, get the correct sorting and return mid
             res += top_sort(update, after_pages)
             
-        
     filename.close()
 
 print(res)
