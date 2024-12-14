@@ -9,7 +9,7 @@ with open("input.txt", "r") as filename:
             
     filename.close()
 
-def part1():
+def part1(stones):
     blinks = 25
     for _ in range(blinks):
         new_stones = []
@@ -26,26 +26,28 @@ def part1():
                 new_stones.append(stone * 2024)
         stones = new_stones
 
-    print(len(stones))
+    return len(stones)
 
-def part2():
-    @cache
-    def solve(stone, blinks):
-        if blinks == 0:
-            return 1
-        if stone == "0":
-            return solve("1", blinks-1)
-        
-        if len(stone) % 2 == 0:
-            mid = len(stone)// 2
-            return solve(stone[:mid], blinks-1) + solve(stone[mid:], blinks-1)
-        
-        return solve(str(int(stone)*2024), blinks-1)
-    
-    res = 0
-    for stone in stones:
-        res += solve(str(stone), 75)
-    
-    return res
 
-print(part2())
+@cache
+def solve(stone, blink_count):
+    if blink_count == 0:
+        return 1
+    
+    if stone == "0":
+        return solve("1", blink_count-1)
+        
+    if len(stone) % 2 == 0:
+        mid = len(stone)//2
+        left, right = str(int(stone[:mid])), str(int(stone[mid:]))
+        return solve(left, blink_count-1) + solve(right, blink_count-1)
+        
+    return solve(str(int(stone)*2024), blink_count-1)
+
+res = 0
+for stone in stones:
+    res += solve(str(stone), 75)
+    
+print(res)
+
+
