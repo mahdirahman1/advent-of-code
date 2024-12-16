@@ -17,8 +17,8 @@ with open("input.txt", "r") as filename:
             else:
                 x_buttons.append(x_button)
                 y_buttons.append(y_button)
-                x = int(r.split(",")[0].split("=")[1])
-                y = int(r.split(",")[1].split("=")[1])
+                x = int(r.split(",")[0].split("=")[1]) + 10000000000000
+                y = int(r.split(",")[1].split("=")[1]) + 10000000000000
                 prizes.append([x,y])
                 x_button = []
                 y_button = []
