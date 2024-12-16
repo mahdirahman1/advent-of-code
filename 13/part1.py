@@ -17,30 +17,37 @@ with open("input.txt", "r") as filename:
             else:
                 x_buttons.append(x_button)
                 y_buttons.append(y_button)
-                x = int(r.split(",")[0].split("=")[1])
-                y = int(r.split(",")[1].split("=")[1])
+                x = int(r.split(",")[0].split("=")[1]) + 10000000000000
+                y = int(r.split(",")[1].split("=")[1]) + 10000000000000
                 prizes.append([x,y])
                 x_button = []
                 y_button = []
     
     filename.close()
 
-def calculate_min(target, options):
-    p1,p2 = max(options), min(options)
-    for p1_presses in range(target//p1, -1, -1):
-        left = target - (p1 * p1_presses)
-        if left % p2 == 0:
-            if options[0] == p1:
-                # p1 is a
-                return [p1_presses, left//p2]
-            else:
-                # p2 is a
-                return [left//p2, p1_presses]
+def calculate_min(x,y, p_x, p_y):
+    """
+    Algebra approach, system of eqns only has one unique soln so no need to worry about findining min
+    Ax*S + Bx+T = Px
+    Ay*S + By*T = Py
 
+    1 AxBy*S + BxBy*T = PxBy
+    2 AyBxS + ByBx*T = PyBx
+
+    1-2:
+    AxBy*S - AyBxS = PxBy - PyBx
+    S = PxBy - PyBx // AxBy - AyBx
+    T = (PyBx - AyBxS)//ByBx
+
+    """
+    a_x, b_x = x
+    a_y, b_y = y
+    s = ((p_x*b_y) - (p_y*b_x))/((a_x*b_y) - (a_y*b_x))
+    t = ((p_y*b_x) - (a_y*b_x*s))/(b_y*b_x)
+    if (s % 1 == 0 and t % 1 == 0):
+        return [int(s), int(t)]
+    
     return False
-
-def check_y_presses(target, options, a_presses, b_presses):
-    pass
 
 def find_min_cost():
     res = 0
@@ -49,8 +56,10 @@ def find_min_cost():
         target_y = prizes[i][1]
         x_options = x_buttons[i]
         y_options = y_buttons[i]
-        x_presses = calculate_min(target_x, x_options)
-        if x_presses:
-            print(x_presses)
+        presses = calculate_min(x_options, y_options, target_x, target_y)
+        if presses:
+            res += 3 * presses[0] + presses[1]
+    
+    return res
 
-find_min_cost()
+print(find_min_cost())
